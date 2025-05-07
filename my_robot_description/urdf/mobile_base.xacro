@@ -15,12 +15,12 @@
                 <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
                 <material name="gray" />
             </visual>
-              <collision>
-            <geometry>
-                <sphere radius="${wheel_radius}"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
-        </collision>
+            <collision>
+                <geometry>
+                    <sphere radius="${wheel_radius}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
+            </collision>
             <xacro:cylinder_inertia m ="1.0" r="${wheel_radius}" l="${wheel_length}" o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
         </link>
     </xacro:macro>
@@ -38,7 +38,7 @@
             <origin xyz="0 0 ${base_height / 2}" rpy="0 0 0"/>
             <material name="green" />
         </visual>
-         <collision>
+        <collision>
             <geometry>
                 <box size="${base_length} ${base_width} ${base_height}"/>
             </geometry>
@@ -56,7 +56,6 @@
             <material name="gray"/>
         </visual>
         <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length * 2}" o_xyz="0 0 ${base_height / 8}" o_rpy="0 0 0" />
-
     </link>
     <joint name="base_shoulder_joint" type="fixed">
         <parent link="base_link" />
@@ -90,7 +89,7 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="gray" />
         </visual>
-          <collision>
+        <collision>
             <geometry>
                 <sphere radius="${wheel_radius /2 }"/>
             </geometry>
@@ -103,4 +102,81 @@
         <child link="caster_wheel" />
         <origin xyz="${base_length /3} 0 ${-wheel_radius /2}" rpy="0 0 0" />
     </joint>
+    <gazebo reference="caster_wheel_link">
+        <mu1 value="0.1" />
+        <mu2 value="0.1" />
+    </gazebo>
+
+    <gazebo>
+        <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <left_joint>base_left_wheel_joint</left_joint>
+            <right_joint>base_right_wheel_joint</right_joint>
+            <odom_topic>odom</odom_topic>
+            <frame_id>odom</frame_id>
+            <odom_publisher_frequency>30</odom_publisher_frequency>
+            <max_linear_acceleration>0.033</max_linear_acceleration>
+            <child_frame_id>base_footprint</child_frame_id>
+            <wheel_separation>0.45</wheel_separation>
+            <wheel_radius>0.1</wheel_radius>
+            <topic>cmd_vel</topic>
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <publish_wheel_tf>false</publish_wheel_tf>
+        </plugin>
+
+
+        <plugin filename="ignition-gazebo-odometry-publisher-system" name="ignition::gazebo::systems::OdometryPublisher">
+            <odom_frame>odom</odom_frame>
+            <odom_covariance_topic>odom</odom_covariance_topic>
+            <tf_topic>tf</tf_topic>
+            <robot_base_frame>base_footprint</robot_base_frame>
+            <!-- <xyz_offset>-3.0 -2.0 0</xyz_offset> -->
+            <!-- <odom_publish_frequency>100</odom_publish_frequency> -->
+        </plugin>
+
+
+    </gazebo>
+    <gazebo>
+        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="shoulder_link">
+    <sensor name="gpu_lidar" type="gpu_lidar">
+      <update_rate>10</update_rate>
+      <topic>scan</topic>
+      <gz_frame_id>shoulder_link</gz_frame_id>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <!--(max_angle-min_angle)/samples * resolution -->
+            <resolution>1</resolution>
+            <min_angle>-3.14156</min_angle>
+            <max_angle>3.14156</max_angle>
+          </horizontal>
+          <!-- Dirty hack for fake lidar detections with ogre 1 rendering in VM -->
+          <!-- <vertical>
+              <samples>3</samples>
+              <min_angle>-0.001</min_angle>
+              <max_angle>0.001</max_angle>
+          </vertical> -->
+        </scan>
+        <range>
+          <min>0.05</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+        </noise>
+        <frame_id>scan_link</frame_id>
+      </lidar>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+
+  </gazebo>
 </robot>
