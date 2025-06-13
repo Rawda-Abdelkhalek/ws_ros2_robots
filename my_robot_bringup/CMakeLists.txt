@@ -8,8 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 install (
-  DIRECTORY launch config
-  worlds
+  DIRECTORY launch config worlds 
   DESTINATION share/${PROJECT_NAME}/
 )
 # uncomment the following section in order to fill in
