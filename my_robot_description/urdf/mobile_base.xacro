@@ -207,7 +207,7 @@
 
     </gazebo>
 <!-- Example for attaching a camera -->
-<gazebo reference="camera_link">
+<!-- <gazebo reference="camera_link">
   <sensor name="camera_sensor" type="camera">
     <camera>
       <horizontal_fov>1.047</horizontal_fov>
@@ -219,5 +219,56 @@
     <always_on>true</always_on>
     <update_rate>30</update_rate>
   </sensor>
-</gazebo>
+</gazebo> -->
+<gazebo reference="camera_link">
+    <sensor name="rgb_camera" type="camera">
+      <pose>0 0.0 0 0 0 0</pose>
+      <camera>
+        <horizontal_fov>1.367</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>200</far>
+        </clip>
+      </camera>
+      <gz_frame_id>camera_link</gz_frame_id>
+      <always_on>1</always_on>
+      <update_rate>10</update_rate>
+      <visualize>1</visualize>
+      <topic>camera/image_raw/image</topic>
+    </sensor>
+  </gazebo>
+
+
+    <gazebo reference="camera_link">
+        <sensor name="depth" type="depth_camera">
+            <pose>0.0089610933050383902 -0.0010701515703293301 1.2157785176357399 0 0 0</pose>
+            <gz_frame_id>camera_link</gz_frame_id>
+            <always_on>1</always_on>
+            <update_rate>10</update_rate>
+            <visualize>1</visualize>
+            <topic>/camera/depth</topic>
+            <camera>
+                <horizontal_fov>1.48702</horizontal_fov>
+                <image>
+                    <width>1280</width>
+                    <height>720</height>
+                    <format>R_FLOAT32</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>100</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0</mean>
+                    <stddev>0.1</stddev>
+                </noise>
+            </camera>
+        </sensor>
+    </gazebo>
+
 </robot>

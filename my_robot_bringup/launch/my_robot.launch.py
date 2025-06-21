@@ -12,7 +12,7 @@ from launch.substitutions import (
     LaunchConfiguration
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node, SetParameter  # ✅ Correct import
+from launch_ros.actions import Node, SetParameter  
 from launch_ros.parameter_descriptions import ParameterValue
 from pathlib import Path
 
@@ -89,7 +89,13 @@ def generate_launch_description():
         }],
         output='screen'
     )
-
+    robot_localization_node = Node(
+    package='robot_localization',
+    executable='ekf_node',
+    name='ekf_node',
+    output='screen',
+    parameters=[os.path.join(directory_gazebo, 'config/ekf.yaml')]
+     )
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -100,10 +106,12 @@ def generate_launch_description():
 
     return LaunchDescription([
         gz_resource_path,
-        SetParameter(name='use_sim_time', value=True),  # ✅ Now works
+        SetParameter(name='use_sim_time', value=True),  
         robot_state_publisher,
         gz_sim,
         gz_spawn_entity,
         bridge,
-        rviz_node
+        rviz_node,
+        robot_localization_node
+        
     ])

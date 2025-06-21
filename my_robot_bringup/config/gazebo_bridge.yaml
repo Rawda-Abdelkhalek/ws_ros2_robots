@@ -1,3 +1,4 @@
+# use "gz topic -l" command to get topics
 # gz topic published by the simulator core
 - ros_topic_name: "clock"
   gz_topic_name: "clock"
@@ -59,14 +60,6 @@
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
-
-# pointcloud gz topic published by Sensors plugin (Depth Camera)
-- ros_topic_name: "/camera/depth/points"
-  gz_topic_name: "/camera/depth/points"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "gz.msgs.PointCloudPacked"
-  direction: GZ_TO_ROS
-
 
 - ros_topic_name: "/rgb_image"
   gz_topic_name: "/camera/image_raw/image"
